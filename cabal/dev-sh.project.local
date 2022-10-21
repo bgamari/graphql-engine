@@ -5,6 +5,8 @@
 -- You can temporarily override values here rather than modifying 'dev.sh'
 -- during development (although that might break certain things).
 
+with-compiler: /home/ben/ghc/ghc/_build/stage1/bin/ghc
+
 package *
   documentation: true
   -- build with DWARF support. This may not be very useful yet, but we want
@@ -19,13 +21,15 @@ package *
     -- of module-level parallelism for dependencies:
     -j2
     +RTS -A64m -n2m -RTS
+  --ghc-options: -with-rtsopts --nonmoving-gc
+  ghc-options: -debug -g3
   
 -- Modify this to '+optimize-hasura' to enable optimizations. Be sure also to comment
 -- 'coverage: true' below for full prod performance.
 --
 -- NOTE: new-build may report a misleading 'Build profile: -O1'
 -- See:https://github.com/haskell/cabal/issues/6221
-flags: -optimize-hasura
+flags: +optimize-hasura
 
 package graphql-engine
   documentation: false

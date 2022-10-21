@@ -4,6 +4,12 @@
 set -euo pipefail
 shopt -s globstar
 
+RTS_ARGS="-DS"
+RTS_ARGS="--nonmoving-gc -DS -l"
+RTS_ARGS="--nonmoving-gc -s -l"
+RR="$HOME/ghc/ghc-utils/result/bin/ghc-rr record -h"
+RR=""
+
 # A development swiss army knife script. The goals are to:
 #
 #  - encode some best practices and hard-won knowledge of quirks and corners of
@@ -326,8 +332,9 @@ if [ "$MODE" = "graphql-engine" ]; then
   echo_pretty ""
 
   RUN_INVOCATION=(cabal new-run --project-file=cabal/dev-sh.project --RTS --
-    exe:graphql-engine +RTS -N -T -s -RTS serve
+    exe:graphql-engine +RTS -N -T -RTS serve
     --enable-console --console-assets-dir "$PROJECT_ROOT/console/static/dist"
+    +RTS $RTS_ARGS -RTS
     )
 
   echo_pretty 'About to do:'
@@ -490,7 +497,8 @@ elif [ "$MODE" = "test" ]; then
       --project-file=cabal/dev-sh.project \
       -- exe:graphql-engine \
         --metadata-database-url="$PG_DB_URL" \
-        version
+        version \
+        +RTS $RTS_ARGS -RTS
     start_dbs
   fi
 
@@ -507,7 +515,8 @@ elif [ "$MODE" = "test" ]; then
       cabal run \
         --project-file=cabal/dev-sh.project \
         test:graphql-engine-tests \
-        -- "${UNIT_TEST_ARGS[@]}"
+        -- "${UNIT_TEST_ARGS[@]}" \
+        +RTS $RTS_ARGS -RTS
   fi
 
   if [ "$RUN_HLINT" = true ]; then
@@ -532,12 +541,12 @@ elif [ "$MODE" = "test" ]; then
 
     # Using --metadata-database-url flag to test multiple backends
     #       HASURA_GRAPHQL_PG_SOURCE_URL_* For a couple multi-source pytests:
-    cabal new-run \
-      --project-file=cabal/dev-sh.project \
-      -- exe:graphql-engine \
+    exe="$(cabal list-bin --project-file=cabal/dev-sh.project exe:graphql-engine)"
+    $RR "$exe" \
         --metadata-database-url="$PG_DB_URL" serve \
         --stringify-numeric-types \
         --enable-console \
+        +RTS -T $RTS_ARGS -RTS \
         --console-assets-dir ../console/static/dist \
       &> "$GRAPHQL_ENGINE_TEST_LOG" & GRAPHQL_ENGINE_PID=$!
 

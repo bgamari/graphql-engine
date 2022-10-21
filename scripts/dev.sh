@@ -4,9 +4,11 @@
 set -euo pipefail
 shopt -s globstar
 
-RTS_ARGS="-DS"
-RTS_ARGS="--nonmoving-gc -DS -l"
-RTS_ARGS="--nonmoving-gc -s -l"
+RTS_ARGS="${RTS_ARGS:-}"
+#RTS_ARGS="$RTS_ARGS -DS"
+#RTS_ARGS="$RTS_ARGS --nonmoving-gc"
+RTS_ARGS="$RTS_ARGS -l"
+RTS_ARGS="$RTS_ARGS -s"
 RR="$HOME/ghc/ghc-utils/result/bin/ghc-rr record -h"
 RR=""
 

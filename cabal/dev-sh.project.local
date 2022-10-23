@@ -5,7 +5,8 @@
 -- You can temporarily override values here rather than modifying 'dev.sh'
 -- during development (although that might break certain things).
 
-with-compiler: /home/ben/ghc/ghc/_build/stage1/bin/ghc
+--with-compiler: /home/ben/ghc/ghc/_build/stage1/bin/ghc
+with-compiler: /home/ben/graphql-engine/wrapped-ghc/ghc
 
 package *
   documentation: true
@@ -19,9 +20,8 @@ package *
   ghc-options:
     -- We compile with package-level parallelism, so just use a small amount 
     -- of module-level parallelism for dependencies:
-    -j2
-    +RTS -A64m -n2m -RTS
-  --ghc-options: -with-rtsopts --nonmoving-gc
+    -j5
+    -- +RTS -A64m -n2m -RTS
   ghc-options: -debug -g3
   
 -- Modify this to '+optimize-hasura' to enable optimizations. Be sure also to comment

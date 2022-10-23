@@ -15,8 +15,6 @@
 --
 -- See: https://www.haskell.org/cabal/users-guide/nix-local-build.html#configuring-builds-with-cabal-project
 
-with-compiler: ghc-9.2.4
-
 -- package-level parallelism:
 jobs: $ncpus
 

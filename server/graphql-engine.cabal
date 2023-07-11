@@ -258,6 +258,10 @@ common common-exe
     -- workaround for limitations in monitoring tools than anything...
     "-with-rtsopts=-N -I0 -T -kc8K --disable-delayed-os-memory-return"
 
+  include-dirs: mimalloc/include
+  c-sources: mimalloc/src/static.c
+  cc-options: -DMI_MALLOC_OVERRIDE
+
 common lib-depends
   build-depends:       Spock-core
                      , aeson
